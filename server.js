@@ -3,19 +3,15 @@ const mongodb       = require('mongodb');
 const mongoose      = require('mongoose');
 const morgan        = require('morgan');
 const bodyparser    = require('body-parser');
-
-
 const Account = require('./models/account.js');
-
 mongoose.connect('mongodb://localhost/test');
 mongoose.Promise = global.Promise;
-
 const app = express();
-
 app.use(morgan('dev'));
 app.listen(8080);
 app.use(bodyparser.json());
 
+// GET
 app.get('/accounts', (req, res)=>{
   Account.find({}).then((result)=>{
     res.status(200).send(result);
@@ -28,6 +24,7 @@ app.get('/accounts/last', (req, res)=>{
   })
 });
 
+// POST
 app.post('/accounts', (req, res) => {
  Account.create({
     name: req.body.name,
@@ -38,6 +35,7 @@ app.post('/accounts', (req, res) => {
   });
 });
 
+// PUT
 app.put('/accounts/:id', (req, res) => {
   Account.findByIdAndUpdate({_id: req.params.id}, {balance: req.body.balance}, (err, result) => {
     if(err) res.status(500).send(err);
@@ -50,6 +48,7 @@ app.put('/accounts/:id', (req, res) => {
   })
 });
 
+// DELETE
 app.delete('/accounts/delete/last', (req, res)=>{
   Account.findOne().sort({ field: 'asc', _id: -1 }).limit(1).then((result)=>{
     if(result === null) res.status(500).send("\n__ Empty collection\n\n");

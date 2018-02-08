@@ -4,7 +4,6 @@ const mongoose      = require('mongoose');
 const morgan        = require('morgan');
 const bodyparser    = require('body-parser');
 
-const errorhandler  = require('errorhandler');
 
 const Account = require('./models/account.js');
 
@@ -51,14 +50,6 @@ app.put('/accounts/:id', (req, res) => {
   })
 });
 
-app.delete('/accounts/:id', (req, res)=>{
-  let id = req.params.id;
-  Account.deleteOne({_id: req.params.id}, (err, result)=>{
-    if(err) res.status(500).send(err);
-    res.status(200).send(`\n__ Account ${id} deleted \n\n`);
-  });
-});
-
 app.delete('/accounts/delete/last', (req, res)=>{
   Account.findOne().sort({ field: 'asc', _id: -1 }).limit(1).then((result)=>{
     if(result === null) res.status(500).send("\n__ Empty collection\n\n");
@@ -70,4 +61,13 @@ app.delete('/accounts/delete/last', (req, res)=>{
     })
     }
   });
-})
+});
+
+
+app.delete('/accounts/:id', (req, res)=>{
+  let id = req.params.id;
+  Account.deleteOne({_id: req.params.id}, (err, result)=>{
+    if(err) res.status(500).send(err);
+    res.status(200).send(`\n__ Account ${id} deleted \n\n`);
+  });
+});
